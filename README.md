@@ -1,4 +1,4 @@
-# Counterfact Example: Petstore
+# Counterfact Example: Swagger Petstore
 
 An example implementation of the [OpenAPI Petstore](https://petstore3.swagger.io/) using [Counterfact](https://counterfact.dev/).
 
