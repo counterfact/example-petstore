@@ -5,15 +5,15 @@ import type { deletePet } from "../../types/paths/pet/{petId}.types.js";
 export const GET: getPetById = ($) => {
   const pet = $.context.getPetById($.path.petId);
   if (!pet) {
-    return { status: 404 };
+    return $.response[404];
   }
-  return { status: 200, body: pet };
+  return $.response[200].json(pet);
 };
 
 export const POST: updatePetWithForm = ($) => {
   const pet = $.context.getPetById($.path.petId);
   if (!pet) {
-    return { status: 400 };
+    return $.response[400];
   }
   const updated = $.context.updatePet({
     ...pet,
@@ -23,15 +23,15 @@ export const POST: updatePetWithForm = ($) => {
       : {}),
   });
   if (!updated) {
-    return { status: 400 };
+    return $.response[400];
   }
-  return { status: 200, body: updated };
+  return $.response[200].json(updated);
 };
 
 export const DELETE: deletePet = ($) => {
   const deleted = $.context.deletePet($.path.petId);
   if (!deleted) {
-    return { status: 400 };
+    return $.response[400];
   }
-  return { status: 200 };
+  return $.response[200];
 };

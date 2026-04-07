@@ -5,23 +5,23 @@ import type { deleteUser } from "../../types/paths/user/{username}.types.js";
 export const GET: getUserByName = ($) => {
   const user = $.context.getUserByUsername($.path.username);
   if (!user) {
-    return { status: 404 };
+    return $.response[404];
   }
-  return { status: 200, body: user };
+  return $.response[200].json(user);
 };
 
 export const PUT: updateUser = ($) => {
   const updated = $.context.updateUser($.path.username, $.body);
   if (!updated) {
-    return { status: 404 };
+    return $.response[404];
   }
-  return { status: 200 };
+  return $.response[200];
 };
 
 export const DELETE: deleteUser = ($) => {
   const deleted = $.context.deleteUser($.path.username);
   if (!deleted) {
-    return { status: 404 };
+    return $.response[404];
   }
-  return { status: 200 };
+  return $.response[200];
 };

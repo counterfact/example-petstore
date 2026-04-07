@@ -119,7 +119,7 @@ export class Context {
     return true;
   }
 
-  findPetsByStatus(status: string): Pet[] {
+  findPetsByStatus(status: "available" | "pending" | "sold"): Pet[] {
     return this.pets.filter((p) => p.status === status);
   }
 

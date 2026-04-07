@@ -3,16 +3,16 @@ import type { addPet } from "../types/paths/pet.types.js";
 
 export const PUT: updatePet = ($) => {
   if (!$.body.id) {
-    return { status: 400 };
+    return $.response[400];
   }
   const updated = $.context.updatePet($.body);
   if (!updated) {
-    return { status: 404 };
+    return $.response[404];
   }
-  return { status: 200, body: updated };
+  return $.response[200].json(updated);
 };
 
 export const POST: addPet = ($) => {
   const pet = $.context.addPet($.body);
-  return { status: 200, body: pet };
+  return $.response[200].json(pet);
 };

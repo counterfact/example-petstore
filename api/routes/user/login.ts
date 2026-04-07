@@ -5,7 +5,7 @@ export const GET: loginUser = ($) => {
     (u) => u.username === $.query.username && u.password === $.query.password,
   );
   if (!user) {
-    return { status: 400 };
+    return $.response[400];
   }
-  return { status: 200, body: `Logged in as ${user.username}` };
+  return $.response[200].json(`Logged in as ${user.username}`);
 };
