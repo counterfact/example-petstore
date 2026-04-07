@@ -1,0 +1,46 @@
+name: CI Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+  merge_group:
+    types: [checks_requested]
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  ci-checks:
+    name: CI Checks
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Debug
+        run: echo "${{ matrix.os }}"
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+        id: setup-node
+      - name: Get Node Version
+        run: echo "version=$(node -v)" >> $GITHUB_OUTPUT
+        id: node-version
+        shell: bash
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ steps.node-version.outputs.version }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install Packages
+        run: npm ci
+      - name: Test
+        run: npm test

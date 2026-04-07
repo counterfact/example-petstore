@@ -4,14 +4,12 @@
   "description": "An implementation of the OpenAPI Petstore using Counterfact",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests yet\"",
+    "start": "counterfact --spec ./spec/petstore.yaml api"
   },
   "author": "Patrick McElhaney",
   "license": "ISC",
   "dependencies": {
     "counterfact": "^2.6.0"
-  },
-  "scripts": {
-    "start": "counterfact --spec ./spec/petstore.yaml api"
   }
 }
