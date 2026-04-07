@@ -1,0 +1,11 @@
+{
+  "name": "counterfact-example-petstore",
+  "version": "1.0.0",
+  "description": "An implementation of the OpenAPI Petstore using Counterfact",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick McElhaney",
+  "license": "ISC"
+}
