@@ -42,5 +42,7 @@ jobs:
           key: ${{ runner.os }}-${{ steps.node-version.outputs.version }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install Packages
         run: npm ci
+      - name: Lint
+        run: npm run lint
       - name: Test
         run: npm test

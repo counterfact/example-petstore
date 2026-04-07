@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/issue-proposals/*.md'
+      - ".github/issue-proposals/*.md"
 
 jobs:
   create-issues:
