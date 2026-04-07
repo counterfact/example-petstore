@@ -10,5 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "counterfact": "^2.6.0"
+  },
+  "scripts": {
+    "start": "counterfact --spec ./spec/petstore.yaml api"
   }
 }
