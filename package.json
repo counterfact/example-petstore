@@ -3,15 +3,23 @@
   "version": "1.0.0",
   "description": "An implementation of the OpenAPI Petstore using Counterfact",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests yet\"",
+    "start": "counterfact --spec ./spec/petstore.yaml api",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "author": "Patrick McElhaney",
   "license": "ISC",
   "dependencies": {
     "counterfact": "^2.6.0"
   },
-  "scripts": {
-    "start": "counterfact --spec ./spec/petstore.yaml api"
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.58.0"
   }
 }
