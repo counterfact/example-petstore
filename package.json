@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"No tests yet\"",
+    "test": "node --test test/**/*.test.ts",
     "start": "counterfact --spec ./spec/petstore.yaml api",
     "lint": "eslint .",
     "format": "prettier --write ."
