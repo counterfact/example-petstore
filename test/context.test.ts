@@ -252,4 +252,107 @@ describe("Context", () => {
       assert.equal(inventory.available, 1);
     });
   });
+
+  describe("scenarios", () => {
+    it("lists available scenario names", () => {
+      assert.ok(context.scenarios.includes("startup"));
+      assert.ok(context.scenarios.includes("empty"));
+      assert.ok(context.scenarios.includes("sold-out"));
+      assert.ok(context.scenarios.includes("busy"));
+    });
+  });
+
+  describe("loadScenario", () => {
+    it("loads the startup scenario with four pets", () => {
+      context.loadScenario("startup");
+      assert.equal(context.pets.length, 4);
+    });
+
+    it("loads the startup scenario with two users", () => {
+      context.loadScenario("startup");
+      assert.equal(context.users.length, 2);
+    });
+
+    it("loads the startup scenario with two orders", () => {
+      context.loadScenario("startup");
+      assert.equal(context.orders.length, 2);
+    });
+
+    it("loads the empty scenario with no pets", () => {
+      context.loadScenario("empty");
+      assert.equal(context.pets.length, 0);
+    });
+
+    it("loads the empty scenario with no users", () => {
+      context.loadScenario("empty");
+      assert.equal(context.users.length, 0);
+    });
+
+    it("loads the empty scenario with no orders", () => {
+      context.loadScenario("empty");
+      assert.equal(context.orders.length, 0);
+    });
+
+    it("assigns a new id after loading the empty scenario", () => {
+      context.loadScenario("empty");
+      const pet = context.addPet({ name: "Rex", photoUrls: [] });
+      assert.ok(typeof pet.id === "number");
+    });
+
+    it("loads the sold-out scenario where all pets are sold", () => {
+      context.loadScenario("sold-out");
+      assert.ok(context.pets.every((p) => p.status === "sold"));
+    });
+
+    it("loads the sold-out scenario where all orders are complete", () => {
+      context.loadScenario("sold-out");
+      assert.ok(context.orders.every((o) => o.complete === true));
+    });
+
+    it("loads the busy scenario with more than four pets", () => {
+      context.loadScenario("busy");
+      assert.ok(context.pets.length > 4);
+    });
+
+    it("loads the busy scenario with more than two users", () => {
+      context.loadScenario("busy");
+      assert.ok(context.users.length > 2);
+    });
+
+    it("loads the busy scenario with more than two orders", () => {
+      context.loadScenario("busy");
+      assert.ok(context.orders.length > 2);
+    });
+
+    it("replaces existing data when switching scenarios", () => {
+      context.addPet({ name: "Extra", photoUrls: [] });
+      context.loadScenario("empty");
+      assert.equal(context.pets.length, 0);
+    });
+
+    it("does not share pet array references between loads", () => {
+      context.loadScenario("startup");
+      context.pets.push({ name: "Extra", photoUrls: [] });
+      context.loadScenario("startup");
+      assert.equal(context.pets.length, 4);
+    });
+
+    it("throws an error for an unknown scenario name", () => {
+      assert.throws(() => context.loadScenario("nonexistent"), /nonexistent/);
+    });
+
+    it("error message lists available scenarios", () => {
+      assert.throws(
+        () => context.loadScenario("nonexistent"),
+        /startup.*empty|empty.*startup/,
+      );
+    });
+
+    it("assigns sequential ids after loading a non-empty scenario", () => {
+      context.loadScenario("startup");
+      const first = context.addPet({ name: "A", photoUrls: [] });
+      const second = context.addPet({ name: "B", photoUrls: [] });
+      assert.equal((second.id as number) - (first.id as number), 1);
+    });
+  });
 });
