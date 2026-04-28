@@ -1,0 +1,1358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🐾 Pet Store</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --primary: #4f86c6;
+        --primary-dark: #3a6fa8;
+        --danger: #e05c5c;
+        --danger-dark: #c94040;
+        --success: #4caf50;
+        --warning: #ff9800;
+        --bg: #f5f7fa;
+        --surface: #ffffff;
+        --border: #dde3ed;
+        --text: #2c3e50;
+        --text-muted: #7f8c8d;
+        --radius: 8px;
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        height: 60px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      header h1 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      nav {
+        display: flex;
+        gap: 4px;
+        margin-left: auto;
+      }
+
+      nav button {
+        background: none;
+        border: none;
+        padding: 8px 16px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        transition: all 0.15s;
+      }
+
+      nav button:hover {
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      nav button.active {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 24px 16px;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+
+      .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* Grid */
+      .pet-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .pet-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .pet-card .name {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+
+      .pet-card .category {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+
+      .pet-card .status-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        width: fit-content;
+      }
+
+      .status-available {
+        background: #e8f5e9;
+        color: #388e3c;
+      }
+
+      .status-pending {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      .status-sold {
+        background: #fce4ec;
+        color: #c2185b;
+      }
+
+      .pet-card .actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 4px;
+      }
+
+      /* Forms */
+      .form-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        margin-bottom: 12px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 120px;
+      }
+
+      label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+
+      input,
+      select,
+      textarea {
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 0.9rem;
+        font-family: inherit;
+        color: var(--text);
+        background: var(--surface);
+        transition: border-color 0.15s;
+        width: 100%;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 60px;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 0.88rem;
+        font-weight: 600;
+        font-family: inherit;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .btn-danger:hover {
+        background: var(--danger-dark);
+      }
+
+      .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+      }
+
+      .btn-ghost {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      .btn-ghost:hover {
+        background: var(--bg);
+      }
+
+      /* Table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+
+      th {
+        text-align: left;
+        font-weight: 600;
+        color: var(--text-muted);
+        padding: 8px 10px;
+        border-bottom: 2px solid var(--border);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover td {
+        background: var(--bg);
+      }
+
+      /* Inventory */
+      .inventory-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .inventory-card {
+        text-align: center;
+        padding: 20px 12px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+      }
+
+      .inventory-card .count {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .inventory-card .label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 4px;
+      }
+
+      .inventory-available {
+        background: #e8f5e9;
+        color: #388e3c;
+        border-color: #a5d6a7;
+      }
+
+      .inventory-pending {
+        background: #fff3e0;
+        color: #f57c00;
+        border-color: #ffcc80;
+      }
+
+      .inventory-sold {
+        background: #fce4ec;
+        color: #c2185b;
+        border-color: #f48fb1;
+      }
+
+      /* Alerts */
+      .alert {
+        padding: 10px 14px;
+        border-radius: var(--radius);
+        font-size: 0.88rem;
+        margin-bottom: 12px;
+        border: 1px solid transparent;
+      }
+
+      .alert-success {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border-color: #a5d6a7;
+      }
+
+      .alert-error {
+        background: #ffebee;
+        color: #c62828;
+        border-color: #ef9a9a;
+      }
+
+      .alert-info {
+        background: #e3f2fd;
+        color: #1565c0;
+        border-color: #90caf9;
+      }
+
+      .empty {
+        text-align: center;
+        color: var(--text-muted);
+        padding: 32px 0;
+        font-size: 0.95rem;
+      }
+
+      /* Modal */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-overlay.open {
+        display: flex;
+      }
+
+      .modal {
+        background: var(--surface);
+        border-radius: var(--radius);
+        padding: 24px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+      }
+
+      .modal-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 16px;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        vertical-align: middle;
+        margin-right: 4px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .tags-input {
+        font-size: 0.85rem;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .section-header h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>🐾 Pet Store</h1>
+      <nav>
+        <button class="active" data-tab="pets">Pets</button>
+        <button data-tab="store">Store</button>
+        <button data-tab="users">Users</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- PETS TAB -->
+      <div id="tab-pets" class="tab-panel active">
+        <div id="pets-alert"></div>
+
+        <!-- Find by Status -->
+        <div class="card">
+          <div class="card-title">🔍 Find Pets by Status</div>
+          <div class="form-row">
+            <div class="form-group" style="max-width: 200px">
+              <label for="status-filter">Status</label>
+              <select id="status-filter">
+                <option value="available">Available</option>
+                <option value="pending">Pending</option>
+                <option value="sold">Sold</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="btn-find-by-status">
+              Search
+            </button>
+          </div>
+          <div id="pets-list" class="pet-grid"></div>
+        </div>
+
+        <!-- Find by Tags -->
+        <div class="card">
+          <div class="card-title">🏷️ Find Pets by Tags</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="tag-search">Tags (comma-separated)</label>
+              <input
+                id="tag-search"
+                type="text"
+                placeholder="e.g. friendly, indoor"
+              />
+            </div>
+            <button class="btn btn-primary" id="btn-find-by-tags">
+              Search
+            </button>
+          </div>
+          <div id="pets-by-tags-list" class="pet-grid"></div>
+        </div>
+
+        <!-- Add Pet -->
+        <div class="card">
+          <div class="card-title">➕ Add New Pet</div>
+          <form id="add-pet-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pet-name">Name *</label>
+                <input id="pet-name" type="text" placeholder="e.g. Rex" required />
+              </div>
+              <div class="form-group">
+                <label for="pet-category">Category</label>
+                <input
+                  id="pet-category"
+                  type="text"
+                  placeholder="e.g. Dogs"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pet-status-add">Status</label>
+                <select id="pet-status-add">
+                  <option value="available">Available</option>
+                  <option value="pending">Pending</option>
+                  <option value="sold">Sold</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="pet-tags">Tags (comma-separated)</label>
+                <input
+                  id="pet-tags"
+                  type="text"
+                  placeholder="e.g. friendly, trained"
+                  class="tags-input"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pet-photo-url">Photo URL</label>
+                <input
+                  id="pet-photo-url"
+                  type="url"
+                  placeholder="https://example.com/photo.jpg"
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="btn-add-pet">
+              Add Pet
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- STORE TAB -->
+      <div id="tab-store" class="tab-panel">
+        <div id="store-alert"></div>
+
+        <!-- Inventory -->
+        <div class="card">
+          <div class="section-header">
+            <div class="card-title" style="margin-bottom: 0; border-bottom: none">📦 Inventory</div>
+            <button class="btn btn-ghost btn-sm" id="btn-refresh-inventory">
+              ↻ Refresh
+            </button>
+          </div>
+          <div class="inventory-grid" id="inventory-display">
+            <div class="inventory-card inventory-available">
+              <div class="count" id="inv-available">—</div>
+              <div class="label">Available</div>
+            </div>
+            <div class="inventory-card inventory-pending">
+              <div class="count" id="inv-pending">—</div>
+              <div class="label">Pending</div>
+            </div>
+            <div class="inventory-card inventory-sold">
+              <div class="count" id="inv-sold">—</div>
+              <div class="label">Sold</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Place Order -->
+        <div class="card">
+          <div class="card-title">🛒 Place Order</div>
+          <form id="place-order-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="order-pet-id">Pet ID *</label>
+                <input
+                  id="order-pet-id"
+                  type="number"
+                  min="1"
+                  placeholder="e.g. 1"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="order-quantity">Quantity *</label>
+                <input
+                  id="order-quantity"
+                  type="number"
+                  min="1"
+                  value="1"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="order-ship-date">Ship Date</label>
+                <input id="order-ship-date" type="date" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Place Order</button>
+          </form>
+        </div>
+
+        <!-- Orders List -->
+        <div class="card">
+          <div class="section-header">
+            <div class="card-title" style="margin-bottom: 0; border-bottom: none">📋 Orders</div>
+          </div>
+          <div id="orders-message"></div>
+          <table id="orders-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Pet ID</th>
+                <th>Qty</th>
+                <th>Ship Date</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Lookup Order by ID -->
+        <div class="card">
+          <div class="card-title">🔎 Look Up Order by ID</div>
+          <div class="form-row">
+            <div class="form-group" style="max-width: 160px">
+              <label for="order-lookup-id">Order ID</label>
+              <input
+                id="order-lookup-id"
+                type="number"
+                min="1"
+                placeholder="e.g. 1"
+              />
+            </div>
+            <button class="btn btn-primary" id="btn-lookup-order">
+              Look Up
+            </button>
+          </div>
+          <div id="order-lookup-result"></div>
+        </div>
+      </div>
+
+      <!-- USERS TAB -->
+      <div id="tab-users" class="tab-panel">
+        <div id="users-alert"></div>
+
+        <!-- Users List -->
+        <div class="card">
+          <div class="section-header">
+            <div class="card-title" style="margin-bottom: 0; border-bottom: none">👥 Users</div>
+          </div>
+          <div id="users-message"></div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Add User -->
+        <div class="card">
+          <div class="card-title">➕ Add User</div>
+          <form id="add-user-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="user-username">Username *</label>
+                <input
+                  id="user-username"
+                  type="text"
+                  placeholder="e.g. johndoe"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="user-first">First Name</label>
+                <input id="user-first" type="text" placeholder="John" />
+              </div>
+              <div class="form-group">
+                <label for="user-last">Last Name</label>
+                <input id="user-last" type="text" placeholder="Doe" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="user-email">Email</label>
+                <input
+                  id="user-email"
+                  type="email"
+                  placeholder="john@example.com"
+                />
+              </div>
+              <div class="form-group">
+                <label for="user-phone">Phone</label>
+                <input id="user-phone" type="tel" placeholder="555-1234" />
+              </div>
+              <div class="form-group">
+                <label for="user-password">Password</label>
+                <input
+                  id="user-password"
+                  type="password"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add User</button>
+          </form>
+        </div>
+
+        <!-- Lookup User by Username -->
+        <div class="card">
+          <div class="card-title">🔎 Look Up User by Username</div>
+          <div class="form-row">
+            <div class="form-group" style="max-width: 220px">
+              <label for="user-lookup-username">Username</label>
+              <input
+                id="user-lookup-username"
+                type="text"
+                placeholder="e.g. johndoe"
+              />
+            </div>
+            <button class="btn btn-primary" id="btn-lookup-user">
+              Look Up
+            </button>
+          </div>
+          <div id="user-lookup-result"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Edit Pet Modal -->
+    <div class="modal-overlay" id="edit-pet-modal">
+      <div class="modal">
+        <div class="modal-title">✏️ Edit Pet</div>
+        <form id="edit-pet-form">
+          <input type="hidden" id="edit-pet-id" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-pet-name">Name *</label>
+              <input id="edit-pet-name" type="text" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-pet-category">Category</label>
+              <input id="edit-pet-category" type="text" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-pet-status">Status</label>
+              <select id="edit-pet-status">
+                <option value="available">Available</option>
+                <option value="pending">Pending</option>
+                <option value="sold">Sold</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="edit-pet-tags">Tags (comma-separated)</label>
+              <input id="edit-pet-tags" type="text" class="tags-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="edit-pet-photo">Photo URL</label>
+            <input id="edit-pet-photo" type="url" />
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn btn-ghost"
+              id="btn-cancel-edit-pet"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal-overlay" id="edit-user-modal">
+      <div class="modal">
+        <div class="modal-title">✏️ Edit User</div>
+        <form id="edit-user-form">
+          <input type="hidden" id="edit-user-orig-username" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-user-username">Username *</label>
+              <input id="edit-user-username" type="text" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-user-first">First Name</label>
+              <input id="edit-user-first" type="text" />
+            </div>
+            <div class="form-group">
+              <label for="edit-user-last">Last Name</label>
+              <input id="edit-user-last" type="text" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-user-email">Email</label>
+              <input id="edit-user-email" type="email" />
+            </div>
+            <div class="form-group">
+              <label for="edit-user-phone">Phone</label>
+              <input id="edit-user-phone" type="tel" />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn btn-ghost"
+              id="btn-cancel-edit-user"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const _apiParam = new URLSearchParams(window.location.search).get("api");
+      const API = _apiParam ? _apiParam.replace(/\/$/, "") : "http://localhost:3100";
+
+      // ─── Helpers ─────────────────────────────────────────────────────────────
+
+      async function api(method, path, body) {
+        const opts = {
+          method,
+          headers: { "Content-Type": "application/json" },
+        };
+        if (body !== undefined) opts.body = JSON.stringify(body);
+        const res = await fetch(API + path, opts);
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          throw new Error(`${method} ${path} → ${res.status}${text ? ": " + text : ""}`);
+        }
+        const ct = res.headers.get("content-type") || "";
+        if (ct.includes("application/json")) return res.json();
+        return null;
+      }
+
+      const alertTimeouts = {};
+
+      function showAlert(containerId, type, msg) {
+        const el = document.getElementById(containerId);
+        clearTimeout(alertTimeouts[containerId]);
+        el.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+        if (type !== "error")
+          alertTimeouts[containerId] = setTimeout(() => (el.innerHTML = ""), 4000);
+      }
+
+      function parseTags(str) {
+        return str
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+          .map((name, i) => ({ id: i + 1, name }));
+      }
+
+      function statusBadge(status) {
+        return `<span class="status-badge status-${status || "available"}">${status || "unknown"}</span>`;
+      }
+
+      // ─── Navigation ──────────────────────────────────────────────────────────
+
+      document.querySelectorAll("nav button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll("nav button")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          document
+            .querySelectorAll(".tab-panel")
+            .forEach((p) => p.classList.remove("active"));
+          document
+            .getElementById("tab-" + btn.dataset.tab)
+            .classList.add("active");
+          if (btn.dataset.tab === "store") {
+            loadInventory();
+            loadOrders();
+          }
+          if (btn.dataset.tab === "users") loadUsers();
+        });
+      });
+
+      // ─── PETS ─────────────────────────────────────────────────────────────────
+
+      function renderPetCard(pet, containerId) {
+        const tagsText = pet.tags?.map((t) => t.name).filter(Boolean).join(", ") || "";
+        return `
+          <div class="pet-card" data-pet-id="${pet.id}">
+            <div class="name">${pet.name}</div>
+            <div class="category">${pet.category?.name || "—"}</div>
+            ${statusBadge(pet.status)}
+            ${tagsText ? `<div style="font-size:0.8rem;color:var(--text-muted)">🏷 ${tagsText}</div>` : ""}
+            <div class="actions">
+              <button class="btn btn-ghost btn-sm" onclick="openEditPetModal(${pet.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deletePet(${pet.id})">Delete</button>
+            </div>
+          </div>`;
+      }
+
+      async function findByStatus() {
+        const status = document.getElementById("status-filter").value;
+        const container = document.getElementById("pets-list");
+        container.innerHTML = "<div class='empty'><span class='spinner'></span> Loading…</div>";
+        try {
+          const pets = await api("GET", `/pet/findByStatus?status=${status}`);
+          if (!pets || pets.length === 0) {
+            container.innerHTML = `<div class="empty">No pets with status "<strong>${status}</strong>".</div>`;
+          } else {
+            container.innerHTML = pets.map((p) => renderPetCard(p)).join("");
+          }
+        } catch (e) {
+          container.innerHTML = "";
+          showAlert("pets-alert", "error", e.message);
+        }
+      }
+
+      document
+        .getElementById("btn-find-by-status")
+        .addEventListener("click", findByStatus);
+
+      document
+        .getElementById("btn-find-by-tags")
+        .addEventListener("click", async () => {
+          const tags = document
+            .getElementById("tag-search")
+            .value.split(",")
+            .map((t) => t.trim())
+            .filter(Boolean);
+          const container = document.getElementById("pets-by-tags-list");
+          if (tags.length === 0) {
+            container.innerHTML = `<div class="empty">Enter at least one tag.</div>`;
+            return;
+          }
+          container.innerHTML = "<div class='empty'><span class='spinner'></span> Loading…</div>";
+          try {
+            const params = tags.map((t) => `tags=${encodeURIComponent(t)}`).join("&");
+            const pets = await api("GET", `/pet/findByTags?${params}`);
+            if (!pets || pets.length === 0) {
+              container.innerHTML = `<div class="empty">No pets found for those tags.</div>`;
+            } else {
+              container.innerHTML = pets.map((p) => renderPetCard(p)).join("");
+            }
+          } catch (e) {
+            container.innerHTML = "";
+            showAlert("pets-alert", "error", e.message);
+          }
+        });
+
+      document
+        .getElementById("add-pet-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const name = document.getElementById("pet-name").value.trim();
+          const category = document.getElementById("pet-category").value.trim();
+          const status = document.getElementById("pet-status-add").value;
+          const tagsRaw = document.getElementById("pet-tags").value;
+          const photoUrl = document.getElementById("pet-photo-url").value.trim();
+
+          const pet = {
+            name,
+            status,
+            photoUrls: photoUrl ? [photoUrl] : [],
+            ...(category ? { category: { id: 0, name: category } } : {}),
+            tags: parseTags(tagsRaw),
+          };
+          try {
+            const created = await api("POST", "/pet", pet);
+            showAlert("pets-alert", "success", `Pet "<strong>${created.name}</strong>" added with ID ${created.id}.`);
+            e.target.reset();
+            findByStatus();
+          } catch (err) {
+            showAlert("pets-alert", "error", err.message);
+          }
+        });
+
+      async function deletePet(id) {
+        if (!confirm(`Delete pet #${id}?`)) return;
+        try {
+          await api("DELETE", `/pet/${id}`);
+          showAlert("pets-alert", "success", `Pet #${id} deleted.`);
+          findByStatus();
+        } catch (e) {
+          showAlert("pets-alert", "error", e.message);
+        }
+      }
+
+      function openEditPetModal(id) {
+        api("GET", `/pet/${id}`)
+          .then((pet) => {
+            document.getElementById("edit-pet-id").value = pet.id;
+            document.getElementById("edit-pet-name").value = pet.name;
+            document.getElementById("edit-pet-category").value = pet.category?.name || "";
+            document.getElementById("edit-pet-status").value = pet.status || "available";
+            document.getElementById("edit-pet-tags").value =
+              pet.tags?.map((t) => t.name).filter(Boolean).join(", ") || "";
+            document.getElementById("edit-pet-photo").value = pet.photoUrls?.[0] || "";
+            document.getElementById("edit-pet-modal").classList.add("open");
+          })
+          .catch((e) => showAlert("pets-alert", "error", e.message));
+      }
+
+      document
+        .getElementById("btn-cancel-edit-pet")
+        .addEventListener("click", () => {
+          document.getElementById("edit-pet-modal").classList.remove("open");
+        });
+
+      document
+        .getElementById("edit-pet-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const id = parseInt(document.getElementById("edit-pet-id").value);
+          const name = document.getElementById("edit-pet-name").value.trim();
+          const category = document.getElementById("edit-pet-category").value.trim();
+          const status = document.getElementById("edit-pet-status").value;
+          const tagsRaw = document.getElementById("edit-pet-tags").value;
+          const photoUrl = document.getElementById("edit-pet-photo").value.trim();
+
+          const pet = {
+            id,
+            name,
+            status,
+            photoUrls: photoUrl ? [photoUrl] : [],
+            ...(category ? { category: { id: 0, name: category } } : {}),
+            tags: parseTags(tagsRaw),
+          };
+          try {
+            await api("PUT", "/pet", pet);
+            document.getElementById("edit-pet-modal").classList.remove("open");
+            showAlert("pets-alert", "success", `Pet "<strong>${name}</strong>" updated.`);
+            findByStatus();
+          } catch (err) {
+            showAlert("pets-alert", "error", err.message);
+          }
+        });
+
+      // ─── STORE ────────────────────────────────────────────────────────────────
+
+      async function loadInventory() {
+        try {
+          const inv = await api("GET", "/store/inventory");
+          document.getElementById("inv-available").textContent = inv.available ?? 0;
+          document.getElementById("inv-pending").textContent = inv.pending ?? 0;
+          document.getElementById("inv-sold").textContent = inv.sold ?? 0;
+        } catch (e) {
+          showAlert("store-alert", "error", "Could not load inventory: " + e.message);
+        }
+      }
+
+      document
+        .getElementById("btn-refresh-inventory")
+        .addEventListener("click", loadInventory);
+
+      // Track placed orders client-side (the API doesn't expose a list endpoint)
+      let placedOrders = [];
+
+      function renderOrders() {
+        const tbody = document.getElementById("orders-tbody");
+        const msg = document.getElementById("orders-message");
+        if (placedOrders.length === 0) {
+          tbody.innerHTML = "";
+          msg.innerHTML = `<div class="empty">No orders placed yet. Use the form above to place one.</div>`;
+          return;
+        }
+        msg.innerHTML = "";
+        tbody.innerHTML = placedOrders
+          .map(
+            (o) => `
+          <tr data-order-id="${o.id}">
+            <td>${o.id}</td>
+            <td>${o.petId}</td>
+            <td>${o.quantity}</td>
+            <td>${o.shipDate ? o.shipDate.slice(0, 10) : "—"}</td>
+            <td>${statusBadge(o.status)}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" onclick="deleteOrder(${o.id})">Delete</button>
+            </td>
+          </tr>`,
+          )
+          .join("");
+      }
+
+      async function loadOrders() {
+        // The petstore API doesn't have a "list all orders" endpoint.
+        // We keep orders placed in this session and try to refresh each.
+        const refreshed = [];
+        for (const o of placedOrders) {
+          try {
+            const fresh = await api("GET", `/store/order/${o.id}`);
+            if (fresh) refreshed.push(fresh);
+          } catch {
+            // order may have been deleted
+          }
+        }
+        placedOrders = refreshed;
+        renderOrders();
+      }
+
+      document
+        .getElementById("place-order-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const petId = parseInt(document.getElementById("order-pet-id").value);
+          const quantity = parseInt(document.getElementById("order-quantity").value);
+          const shipDate = document.getElementById("order-ship-date").value;
+
+          const order = {
+            petId,
+            quantity,
+            status: "placed",
+            complete: false,
+            ...(shipDate ? { shipDate: new Date(shipDate).toISOString() } : {}),
+          };
+          try {
+            const created = await api("POST", "/store/order", order);
+            placedOrders.push(created);
+            renderOrders();
+            showAlert("store-alert", "success", `Order #${created.id} placed for pet #${created.petId}.`);
+            e.target.reset();
+            loadInventory();
+          } catch (err) {
+            showAlert("store-alert", "error", err.message);
+          }
+        });
+
+      async function deleteOrder(id) {
+        if (!confirm(`Delete order #${id}?`)) return;
+        try {
+          await api("DELETE", `/store/order/${id}`);
+          placedOrders = placedOrders.filter((o) => o.id !== id);
+          renderOrders();
+          showAlert("store-alert", "success", `Order #${id} deleted.`);
+        } catch (e) {
+          showAlert("store-alert", "error", e.message);
+        }
+      }
+
+      document
+        .getElementById("btn-lookup-order")
+        .addEventListener("click", async () => {
+          const id = document.getElementById("order-lookup-id").value;
+          const container = document.getElementById("order-lookup-result");
+          if (!id) {
+            container.innerHTML = `<div class="alert alert-info">Enter an order ID.</div>`;
+            return;
+          }
+          try {
+            const order = await api("GET", `/store/order/${id}`);
+            container.innerHTML = `
+              <div class="alert alert-success">
+                Order #${order.id} — Pet ID: ${order.petId}, Qty: ${order.quantity},
+                Status: ${order.status}, Ship: ${order.shipDate ? order.shipDate.slice(0,10) : "—"}
+              </div>`;
+          } catch (e) {
+            container.innerHTML = `<div class="alert alert-error">${e.message}</div>`;
+          }
+        });
+
+      // ─── USERS ────────────────────────────────────────────────────────────────
+
+      // The petstore API doesn't have a "list all users" endpoint, so we
+      // keep track of usernames added or known from pre-seeded data.
+      let knownUsernames = ["user1", "jane_smith"];
+
+      async function loadUsers() {
+        const tbody = document.getElementById("users-tbody");
+        const msg = document.getElementById("users-message");
+        const users = [];
+        for (const username of knownUsernames) {
+          try {
+            const u = await api("GET", `/user/${username}`);
+            if (u) users.push(u);
+          } catch {
+            // user may have been deleted
+          }
+        }
+        if (users.length === 0) {
+          tbody.innerHTML = "";
+          msg.innerHTML = `<div class="empty">No users found.</div>`;
+          return;
+        }
+        msg.innerHTML = "";
+        tbody.innerHTML = users
+          .map(
+            (u) => `
+          <tr data-username="${u.username}">
+            <td>${u.id ?? "—"}</td>
+            <td>${u.username}</td>
+            <td>${[u.firstName, u.lastName].filter(Boolean).join(" ") || "—"}</td>
+            <td>${u.email || "—"}</td>
+            <td>${u.phone || "—"}</td>
+            <td>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-ghost btn-sm" onclick="openEditUserModal('${u.username}')">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.username}')">Delete</button>
+              </div>
+            </td>
+          </tr>`,
+          )
+          .join("");
+      }
+
+      document
+        .getElementById("add-user-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const username = document.getElementById("user-username").value.trim();
+          const user = {
+            username,
+            firstName: document.getElementById("user-first").value.trim(),
+            lastName: document.getElementById("user-last").value.trim(),
+            email: document.getElementById("user-email").value.trim(),
+            phone: document.getElementById("user-phone").value.trim(),
+            password: document.getElementById("user-password").value,
+          };
+          try {
+            await api("POST", "/user", user);
+            if (!knownUsernames.includes(username)) {
+              knownUsernames.push(username);
+            }
+            showAlert("users-alert", "success", `User "<strong>${username}</strong>" created.`);
+            e.target.reset();
+            loadUsers();
+          } catch (err) {
+            showAlert("users-alert", "error", err.message);
+          }
+        });
+
+      async function deleteUser(username) {
+        if (!confirm(`Delete user "${username}"?`)) return;
+        try {
+          await api("DELETE", `/user/${username}`);
+          knownUsernames = knownUsernames.filter((u) => u !== username);
+          showAlert("users-alert", "success", `User "<strong>${username}</strong>" deleted.`);
+          loadUsers();
+        } catch (e) {
+          showAlert("users-alert", "error", e.message);
+        }
+      }
+
+      function openEditUserModal(username) {
+        api("GET", `/user/${username}`)
+          .then((u) => {
+            document.getElementById("edit-user-orig-username").value = u.username;
+            document.getElementById("edit-user-username").value = u.username;
+            document.getElementById("edit-user-first").value = u.firstName || "";
+            document.getElementById("edit-user-last").value = u.lastName || "";
+            document.getElementById("edit-user-email").value = u.email || "";
+            document.getElementById("edit-user-phone").value = u.phone || "";
+            document.getElementById("edit-user-modal").classList.add("open");
+          })
+          .catch((e) => showAlert("users-alert", "error", e.message));
+      }
+
+      document
+        .getElementById("btn-cancel-edit-user")
+        .addEventListener("click", () => {
+          document.getElementById("edit-user-modal").classList.remove("open");
+        });
+
+      document
+        .getElementById("edit-user-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const origUsername = document.getElementById("edit-user-orig-username").value;
+          const newUsername = document.getElementById("edit-user-username").value.trim();
+          const user = {
+            username: newUsername,
+            firstName: document.getElementById("edit-user-first").value.trim(),
+            lastName: document.getElementById("edit-user-last").value.trim(),
+            email: document.getElementById("edit-user-email").value.trim(),
+            phone: document.getElementById("edit-user-phone").value.trim(),
+          };
+          try {
+            await api("PUT", `/user/${origUsername}`, user);
+            if (newUsername !== origUsername) {
+              knownUsernames = knownUsernames.map((u) =>
+                u === origUsername ? newUsername : u,
+              );
+            }
+            document.getElementById("edit-user-modal").classList.remove("open");
+            showAlert("users-alert", "success", `User "<strong>${newUsername}</strong>" updated.`);
+            loadUsers();
+          } catch (err) {
+            showAlert("users-alert", "error", err.message);
+          }
+        });
+
+      document
+        .getElementById("btn-lookup-user")
+        .addEventListener("click", async () => {
+          const username = document.getElementById("user-lookup-username").value.trim();
+          const container = document.getElementById("user-lookup-result");
+          if (!username) {
+            container.innerHTML = `<div class="alert alert-info">Enter a username.</div>`;
+            return;
+          }
+          try {
+            const u = await api("GET", `/user/${username}`);
+            container.innerHTML = `
+              <div class="alert alert-success">
+                Found: <strong>${u.username}</strong> — ${[u.firstName, u.lastName].filter(Boolean).join(" ") || "—"}
+                ${u.email ? "· " + u.email : ""}
+                ${u.phone ? "· " + u.phone : ""}
+              </div>`;
+          } catch (e) {
+            container.innerHTML = `<div class="alert alert-error">${e.message}</div>`;
+          }
+        });
+
+      // ─── Init ──────────────────────────────────────────────────────────────────
+      findByStatus();
+    </script>
+  </body>
+</html>

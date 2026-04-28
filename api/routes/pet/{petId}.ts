@@ -3,7 +3,7 @@ import type { updatePetWithForm } from "../../types/paths/pet/{petId}.types.js";
 import type { deletePet } from "../../types/paths/pet/{petId}.types.js";
 
 export const GET: getPetById = ($) => {
-  const pet = $.context.getPetById($.path.petId);
+  const pet = $.context.getPetById(Number($.path.petId));
   if (!pet) {
     return $.response[404];
   }
@@ -11,7 +11,7 @@ export const GET: getPetById = ($) => {
 };
 
 export const POST: updatePetWithForm = ($) => {
-  const pet = $.context.getPetById($.path.petId);
+  const pet = $.context.getPetById(Number($.path.petId));
   if (!pet) {
     return $.response[400];
   }
@@ -29,7 +29,7 @@ export const POST: updatePetWithForm = ($) => {
 };
 
 export const DELETE: deletePet = ($) => {
-  const deleted = $.context.deletePet($.path.petId);
+  const deleted = $.context.deletePet(Number($.path.petId));
   if (!deleted) {
     return $.response[400];
   }

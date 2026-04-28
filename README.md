@@ -28,6 +28,46 @@ Once running, Counterfact provides:
 - An interactive REPL for inspecting and manipulating server state at runtime
 - A Swagger UI for exploring and testing the API
 
+### Pet Store UI
+
+A single-page app is included in the `ui/` directory. After starting the mock server, open `ui/index.html` in a browser, or serve it with any static file server:
+
+```bash
+npx serve ui
+```
+
+Then visit `http://localhost:3000` (or whatever port `serve` uses). The UI communicates with the Counterfact backend at `http://localhost:3100` by default. To point it at a different API server, pass the `api` query parameter:
+
+```
+http://localhost:3000/?api=http://localhost:3100
+```
+
+The UI covers all petstore APIs:
+
+- **Pets tab** – browse pets by status, search by tags, add, edit, and delete pets
+- **Store tab** – view live inventory, place orders, look up and delete orders
+- **Users tab** – list, add, edit, look up, and delete users
+
+## Testing
+
+### Unit tests
+
+```bash
+npm test
+```
+
+Runs the context unit tests with Node's built-in test runner.
+
+### UI tests (Playwright)
+
+```bash
+npm run test:ui
+```
+
+Starts the Counterfact API server on port 3101 and a static file server on port 8080, then runs Playwright browser tests against the full UI + backend stack.
+
+Playwright reports are written to `playwright-report/`. Test failure artefacts (screenshots, videos) go to `test-results/`.
+
 ## Project Structure
 
 ```
@@ -41,6 +81,12 @@ Once running, Counterfact provides:
 │   └── types/           # Generated TypeScript types from the OpenAPI spec
 ├── spec/
 │   └── petstore.yaml    # OpenAPI specification for the Petstore API
+├── test/
+│   ├── context.test.ts  # Unit tests for the Context class
+│   └── petstore.ui.test.ts  # Playwright end-to-end UI tests
+├── ui/
+│   └── index.html       # Single-page application
+├── playwright.config.ts # Playwright configuration
 └── package.json
 ```
 
