@@ -1,7 +1,7 @@
 import type { uploadFile } from "../../../types/paths/pet/{petId}/uploadImage.types.js";
 
 export const POST: uploadFile = ($) => {
-  const pet = $.context.getPetById($.path.petId);
+  const pet = $.context.getPetById(Number($.path.petId));
   if (!pet) {
     return $.response[404];
   }
