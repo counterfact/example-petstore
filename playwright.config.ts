@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { TEST_API_PORT, TEST_API_URL } from "./test/constants.js";
 
 export default defineConfig({
   testDir: "./test",
@@ -20,8 +21,8 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: "npm run start:test",
-      url: "http://localhost:3101/store/inventory",
+      command: `npm run start:test -- --port ${TEST_API_PORT}`,
+      url: `${TEST_API_URL}/store/inventory`,
       reuseExistingServer: !process.env.CI,
       timeout: 20_000,
       stdout: "ignore",

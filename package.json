@@ -8,7 +8,7 @@
     "test": "node --test --import tsx/esm test/context.test.ts",
     "test:ui": "playwright test",
     "start": "counterfact --spec ./spec/petstore.yaml api",
-    "start:test": "counterfact --spec ./spec/petstore.yaml api --port 3101",
+    "start:test": "counterfact --spec ./spec/petstore.yaml api",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

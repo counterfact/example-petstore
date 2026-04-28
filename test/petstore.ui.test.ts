@@ -1,7 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
+import { TEST_API_URL } from "./constants.js";
 
-const API_URL = "http://localhost:3101";
-const UI_BASE = `/?api=${encodeURIComponent(API_URL)}`;
+const UI_BASE = `/?api=${encodeURIComponent(TEST_API_URL)}`;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

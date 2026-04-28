@@ -172,6 +172,11 @@
         color: #c2185b;
       }
 
+      .status-unknown {
+        background: #eeeeee;
+        color: #757575;
+      }
+
       .pet-card .actions {
         display: flex;
         gap: 6px;
@@ -898,7 +903,8 @@
       }
 
       function statusBadge(status) {
-        return `<span class="status-badge status-${status || "available"}">${status || "unknown"}</span>`;
+        const s = status || "unknown";
+        return `<span class="status-badge status-${s}">${s}</span>`;
       }
 
       // ─── Navigation ──────────────────────────────────────────────────────────
